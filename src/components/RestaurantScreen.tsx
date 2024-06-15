@@ -1,4 +1,4 @@
-import { RestaurantList } from './RestaurantList';
+import { RestaurantList } from './ui/RestaurantList';
 
 export const RestaurantScreen = () => {
   return (

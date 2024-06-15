@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
+import { Restaurant } from '../types/Restaurant';
 
 interface RestaurantListProps {
   loadRestaurants: () => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  restaurants: any[];
+  restaurants: Restaurant[];
 }
 
 export const RestaurantList = ({
