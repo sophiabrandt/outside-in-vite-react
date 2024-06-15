@@ -13,7 +13,7 @@ test.describe('Listing Restaurants', () => {
         },
         {
           name: pizzaPlace,
-          type: 2,
+          id: 2,
         },
       ];
       await route.fulfill({ json });
