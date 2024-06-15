@@ -1,17 +1,10 @@
-import { useEffect } from 'react';
 import { Restaurant } from '../types/Restaurant';
 
 interface RestaurantListProps {
-  loadRestaurants: () => void;
   restaurants: Restaurant[];
 }
 
-export const RestaurantList = ({
-  loadRestaurants,
-  restaurants,
-}: RestaurantListProps) => {
-  useEffect(() => loadRestaurants(), [loadRestaurants]);
-
+export const RestaurantList = ({ restaurants }: RestaurantListProps) => {
   return (
     <div>
       <h2>Restaurant List</h2>
