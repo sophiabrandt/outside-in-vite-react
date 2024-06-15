@@ -16,12 +16,8 @@ export class RestaurantStore {
   }
 
   *getRestaurants() {
-    try {
-      const restaurants: Restaurant[] = yield this.transportLayer.get();
-      this.restaurants = restaurants;
-      return restaurants;
-    } catch (error) {
-      //
-    }
+    const restaurants: Restaurant[] = yield this.transportLayer.get();
+    this.restaurants = restaurants;
+    return restaurants;
   }
 }

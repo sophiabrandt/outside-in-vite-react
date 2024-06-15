@@ -20,5 +20,9 @@ export default defineConfig({
     setupFiles: ['tests/setup.ts'],
     environment: 'jsdom',
     exclude: ['**/node_modules/**', '**/dist/**', 'e2e/**'],
+    coverage: {
+      reporter: ['text-summary', 'lcov', 'html'],
+      include: ['src/**'],
+    },
   },
 });

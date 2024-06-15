@@ -1,7 +1,6 @@
-import { ITransportLayer } from '@/components/store/ITransportLayer';
-import { RestaurantStore } from '@/components/store/RestaurantStore';
-import { Restaurant } from '@/components/types/Restaurant';
+import { RestaurantStore } from '@/restaurants/store/RestaurantStore';
 import { flowResult } from 'mobx';
+import { MockTransportLayer } from '../MockTransportLayer';
 
 describe('RestaurantStore', () => {
   it('should fetch restaurants', async () => {
@@ -30,11 +29,3 @@ describe('RestaurantStore', () => {
     expect(actual).toEqual(expected);
   });
 });
-
-class MockTransportLayer implements ITransportLayer<Restaurant> {
-  private restaurants: Restaurant[] = [];
-
-  get() {
-    return Promise.resolve(this.restaurants);
-  }
-}

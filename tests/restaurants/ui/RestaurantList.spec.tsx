@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import { RestaurantList } from '@/components/ui/RestaurantList';
+import { RestaurantList } from '@/restaurants/ui/RestaurantList';
 
 describe('RestaurantList', () => {
-  it('displays the restaurants', () => {
+  it('should display the restaurants', () => {
     // Arrange
     const sushiPlace = 'Sushi Place';
     const pizzaPlace = 'Pizza Place';
