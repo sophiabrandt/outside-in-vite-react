@@ -1,25 +1,24 @@
 import { RestaurantStore } from '@/restaurants/store/RestaurantStore';
 
 describe('RestaurantStore', () => {
+  const mockTransportLayer = {
+    get: vi.fn(),
+  };
+
   it('should fetch restaurants', async () => {
     // Arrange
-    const sushiPlace = 'Sushi Place';
-    const pizzaPlace = 'Pizza Place';
     const expected = [
       {
-        name: sushiPlace,
+        name: 'Sushi Place',
         id: 1,
       },
       {
-        name: pizzaPlace,
+        name: 'Pizza Place',
         id: 2,
       },
     ];
-    const transportLayer = {
-      get: vi.fn(),
-    };
-    const spy = vi.spyOn(transportLayer, 'get').mockResolvedValue(expected);
-    const sut = new RestaurantStore(transportLayer);
+    const spy = vi.spyOn(mockTransportLayer, 'get').mockResolvedValue(expected);
+    const sut = new RestaurantStore(mockTransportLayer);
 
     // Act
     const actual = await sut.getRestaurants();
@@ -27,5 +26,51 @@ describe('RestaurantStore', () => {
     // Assert
     expect(spy).toHaveBeenCalled();
     expect(actual).toEqual(expected);
+  });
+
+  it('should set a loading flag', async () => {
+    // Arrange
+    const sut = new RestaurantStore(mockTransportLayer);
+    expect(sut.isLoading).toBe(false);
+
+    // Act
+    sut.getRestaurants();
+
+    // Assert
+    expect(sut.isLoading).toBe(true);
+  });
+
+  it('should initially flag "isLoading" as false', async () => {
+    const sut = new RestaurantStore(mockTransportLayer);
+
+    expect(sut.isLoading).toBe(false);
+  });
+
+  describe('when loading', () => {
+    it('should set the loading flag', async () => {
+      // Arrange
+      const sut = new RestaurantStore(mockTransportLayer);
+
+      // Act
+      sut.getRestaurants();
+
+      // Assert
+      expect(sut.isLoading).toBe(true);
+    });
+  });
+
+  describe('when loading suceeeds', () => {
+    it('should clear the loading flag', async () => {
+      // Arrange
+      const sut = new RestaurantStore(mockTransportLayer);
+
+      // Act
+      await sut.getRestaurants();
+
+      // Assert
+      expect(sut.isLoading).toBe(false);
+    });
+
+    it.todo('should store the restaurants');
   });
 });
