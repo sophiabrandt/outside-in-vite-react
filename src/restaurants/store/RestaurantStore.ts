@@ -15,9 +15,9 @@ export class RestaurantStore {
     this.restaurants = [];
   }
 
-  *getRestaurants() {
+  getRestaurants = flow(function* (this: RestaurantStore) {
     const restaurants: Restaurant[] = yield this.transportLayer.get();
     this.restaurants = restaurants;
     return restaurants;
-  }
+  });
 }

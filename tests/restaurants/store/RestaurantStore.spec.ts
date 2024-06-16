@@ -1,5 +1,4 @@
 import { RestaurantStore } from '@/restaurants/store/RestaurantStore';
-import { flowResult } from 'mobx';
 import { MockTransportLayer } from '../MockTransportLayer';
 
 describe('RestaurantStore', () => {
@@ -22,7 +21,7 @@ describe('RestaurantStore', () => {
     const sut = new RestaurantStore(transportLayer);
 
     // Act
-    const actual = await flowResult(sut.getRestaurants());
+    const actual = await sut.getRestaurants();
 
     // Assert
     expect(spy).toHaveBeenCalled();
