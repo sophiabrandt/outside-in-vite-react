@@ -2,7 +2,6 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import { RestaurantScreen } from '@/restaurants/RestaurantScreen';
 import { RestaurantStoreContext } from '@/restaurants/RestaurantContext';
-import { MockTransportLayer } from './MockTransportLayer';
 
 describe('RestaurantScreen', () => {
   it('should render the restaurants received from server', async () => {
@@ -11,7 +10,7 @@ describe('RestaurantScreen', () => {
     const mockStore = {
       getRestaurants: vi.fn(),
       restaurants: mockRestaurants,
-      transportLayer: new MockTransportLayer(),
+      transportLayer: { get: vi.fn() },
     };
     const renderWithContext = (component: React.ReactNode) => {
       return render(

@@ -1,5 +1,4 @@
 import { RestaurantStore } from '@/restaurants/store/RestaurantStore';
-import { MockTransportLayer } from '../MockTransportLayer';
 
 describe('RestaurantStore', () => {
   it('should fetch restaurants', async () => {
@@ -16,7 +15,9 @@ describe('RestaurantStore', () => {
         id: 2,
       },
     ];
-    const transportLayer = new MockTransportLayer();
+    const transportLayer = {
+      get: vi.fn(),
+    };
     const spy = vi.spyOn(transportLayer, 'get').mockResolvedValue(expected);
     const sut = new RestaurantStore(transportLayer);
 
