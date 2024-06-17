@@ -6,13 +6,23 @@ import { RestaurantStoreContext } from '@/restaurants/RestaurantContext';
 import { RestaurantStore } from '@/restaurants/store/RestaurantStore';
 
 describe('RestaurantScreen', () => {
+  let mockStore: RestaurantStore;
+
+  beforeEach(() => {
+    mockStore = assertType<RestaurantStore>({
+      getRestaurants: vi.fn(),
+      isLoading: false,
+      isLoadingError: false,
+      restaurants: [],
+      transportLayer: { get: vi.fn().mockResolvedValue([]) },
+    });
+  });
+
   describe('when loading', () => {
     it('should show the loading spinner', () => {
       // Arrange
-      const mockTransportLayer = { get: vi.fn().mockResolvedValue([]) };
-      const store = new RestaurantStore(mockTransportLayer);
-
-      const { renderWithContext } = setup(store);
+      mockStore.isLoading = true;
+      const { renderWithContext } = setup(mockStore);
 
       // Act
       waitFor(() => {
@@ -27,12 +37,6 @@ describe('RestaurantScreen', () => {
   describe('when loading suceeds', () => {
     it('should not show the loading spinner', async () => {
       // Arrange
-      const mockStore = assertType<RestaurantStore>({
-        getRestaurants: vi.fn(),
-        isLoading: false,
-        restaurants: [{ id: 1, name: 'Mock Restaurant' }],
-        transportLayer: { get: vi.fn() },
-      });
       const { renderWithContext } = setup(mockStore);
 
       // Act
@@ -44,12 +48,6 @@ describe('RestaurantScreen', () => {
 
     it('should not display the error message', async () => {
       // Arrange
-      const mockStore = assertType<RestaurantStore>({
-        getRestaurants: vi.fn(),
-        isLoading: false,
-        restaurants: [],
-        transportLayer: { get: vi.fn() },
-      });
       const { renderWithContext } = setup(mockStore);
 
       // Act
@@ -61,12 +59,7 @@ describe('RestaurantScreen', () => {
 
     it('should render the restaurants received from server', async () => {
       // Arrange
-      const mockStore = assertType<RestaurantStore>({
-        getRestaurants: vi.fn(),
-        isLoading: false,
-        restaurants: [{ id: 1, name: 'Mock Restaurant' }],
-        transportLayer: { get: vi.fn() },
-      });
+      mockStore.restaurants = [{ id: 1, name: 'Mock Restaurant' }];
       const { renderWithContext } = setup(mockStore);
 
       // Act
@@ -86,13 +79,7 @@ describe('RestaurantScreen', () => {
   describe('when loading fails', () => {
     it('should display the error message', async () => {
       // Arrange
-      const mockStore = assertType<RestaurantStore>({
-        getRestaurants: vi.fn(),
-        isLoading: false,
-        isLoadingError: true,
-        restaurants: [],
-        transportLayer: { get: vi.fn() },
-      });
+      mockStore.isLoadingError = true;
       const { renderWithContext } = setup(mockStore);
 
       // Act
