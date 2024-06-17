@@ -42,6 +42,23 @@ describe('RestaurantScreen', () => {
       expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
     });
 
+    it('should not display the error message', async () => {
+      // Arrange
+      const mockStore = assertType<RestaurantStore>({
+        getRestaurants: vi.fn(),
+        isLoading: false,
+        restaurants: [],
+        transportLayer: { get: vi.fn() },
+      });
+      const { renderWithContext } = setup(mockStore);
+
+      // Act
+      renderWithContext(<RestaurantScreen />);
+
+      // Assert
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    });
+
     it('should render the restaurants received from server', async () => {
       // Arrange
       const mockStore = assertType<RestaurantStore>({
@@ -63,6 +80,26 @@ describe('RestaurantScreen', () => {
         expect(mockStore.getRestaurants).toHaveBeenCalledTimes(1);
       });
       expect(screen.getByText(/Mock Restaurant/i)).toBeInTheDocument();
+    });
+  });
+
+  describe('when loading fails', () => {
+    it('should display the error message', async () => {
+      // Arrange
+      const mockStore = assertType<RestaurantStore>({
+        getRestaurants: vi.fn(),
+        isLoading: false,
+        isLoadingError: true,
+        restaurants: [],
+        transportLayer: { get: vi.fn() },
+      });
+      const { renderWithContext } = setup(mockStore);
+
+      // Act
+      renderWithContext(<RestaurantScreen />);
+
+      // Assert
+      expect(screen.getByRole('alert')).toBeInTheDocument();
     });
   });
 

@@ -15,9 +15,8 @@ export class RestaurantTransportLayer implements ITransportLayer<Restaurant> {
       }
       return await response.json();
     } catch (error) {
-      console.error('Failed to fetch restaurants:', error);
       throw new Error(
-        `Failed to fetch restaurants: ${error instanceof Error ? error.message : error}`
+        `Failed to fetch restaurants: ${error instanceof Error && error.message}`
       );
     }
   }

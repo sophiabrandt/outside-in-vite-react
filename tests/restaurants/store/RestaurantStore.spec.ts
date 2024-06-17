@@ -73,4 +73,21 @@ describe('RestaurantStore', () => {
 
     it.todo('should store the restaurants');
   });
+
+  describe('when loading fails', () => {
+    it('should set a loading error flag', async () => {
+      // Arrange
+      const mockTransportLayer = {
+        get: vi.fn().mockRejectedValue('TEST ERROR'),
+      };
+      const sut = new RestaurantStore(mockTransportLayer);
+      expect(sut.isLoadingError).toBe(false);
+
+      // Act
+      await sut.getRestaurants();
+
+      // Assert
+      expect(sut.isLoadingError).toBe(true);
+    });
+  });
 });
