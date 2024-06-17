@@ -1,9 +1,15 @@
+import { ITransportLayer } from '@/restaurants/store/ITransportLayer';
 import { RestaurantStore } from '@/restaurants/store/RestaurantStore';
+import { Restaurant } from '@/restaurants/types/Restaurant';
 
 describe('RestaurantStore', () => {
-  const mockTransportLayer = {
-    get: vi.fn(),
-  };
+  let mockTransportLayer: ITransportLayer<Restaurant>;
+
+  beforeEach(() => {
+    mockTransportLayer = {
+      get: vi.fn(),
+    };
+  });
 
   it('should fetch restaurants', async () => {
     // Arrange
@@ -75,13 +81,22 @@ describe('RestaurantStore', () => {
   });
 
   describe('when loading fails', () => {
+    it('should clear the loading flag', async () => {
+      // Arrange
+      mockTransportLayer.get = vi.fn().mockRejectedValue('TEST ERROR');
+      const sut = new RestaurantStore(mockTransportLayer);
+
+      // Act
+      await sut.getRestaurants();
+
+      // Assert
+      expect(sut.isLoading).toBe(false);
+    });
+
     it('should set a loading error flag', async () => {
       // Arrange
-      const mockTransportLayer = {
-        get: vi.fn().mockRejectedValue('TEST ERROR'),
-      };
+      mockTransportLayer.get = vi.fn().mockRejectedValue('TEST ERROR');
       const sut = new RestaurantStore(mockTransportLayer);
-      expect(sut.isLoadingError).toBe(false);
 
       // Act
       await sut.getRestaurants();
