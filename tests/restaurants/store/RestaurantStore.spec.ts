@@ -77,7 +77,27 @@ describe('RestaurantStore', () => {
       expect(sut.isLoading).toBe(false);
     });
 
-    it.todo('should store the restaurants');
+    it('should store the restaurants', async () => {
+      // Arrange
+      const expected = [
+        {
+          id: crypto.getRandomValues(new Uint16Array(10))[0],
+          name: 'Test Place 1',
+        },
+        {
+          id: crypto.getRandomValues(new Uint16Array(10))[0],
+          name: 'Test Place 2',
+        },
+      ];
+      mockTransportLayer.get = vi.fn().mockResolvedValueOnce(expected);
+      const sut = new RestaurantStore(mockTransportLayer);
+
+      // Act
+      await sut.getRestaurants();
+
+      // Assert
+      expect(sut.restaurants).toStrictEqual(expected);
+    });
   });
 
   describe('when loading fails', () => {
