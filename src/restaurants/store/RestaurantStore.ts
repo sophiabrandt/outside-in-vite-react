@@ -1,8 +1,9 @@
 import { flow, observable, makeObservable } from 'mobx';
 import { Restaurant } from '../types/Restaurant';
 import { ITransportLayer } from './ITransportLayer';
+import { IRestaurantStore } from './IRestaurantStore';
 
-export class RestaurantStore {
+export class RestaurantStore implements IRestaurantStore {
   restaurants: Restaurant[];
   transportLayer: ITransportLayer<Restaurant>;
   isLoading: boolean;

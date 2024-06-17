@@ -3,13 +3,13 @@ import { vi } from 'vitest';
 import { assertType } from '../assertType';
 import { RestaurantScreen } from '@/restaurants/RestaurantScreen';
 import { RestaurantStoreContext } from '@/restaurants/RestaurantContext';
-import { RestaurantStore } from '@/restaurants/store/RestaurantStore';
+import { IRestaurantStore } from '@/restaurants/store/IRestaurantStore';
 
 describe('RestaurantScreen', () => {
-  let mockStore: RestaurantStore;
+  let mockStore: IRestaurantStore;
 
   beforeEach(() => {
-    mockStore = assertType<RestaurantStore>({
+    mockStore = assertType<IRestaurantStore>({
       getRestaurants: vi.fn(),
       isLoading: false,
       isLoadingError: false,
@@ -90,7 +90,7 @@ describe('RestaurantScreen', () => {
     });
   });
 
-  function setup(store: RestaurantStore) {
+  function setup(store: IRestaurantStore) {
     const renderWithContext = (component: React.ReactNode) => {
       return render(
         <RestaurantStoreContext.Provider value={store}>

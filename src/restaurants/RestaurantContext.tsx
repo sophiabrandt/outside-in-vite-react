@@ -2,11 +2,12 @@
 import { createContext } from 'react';
 import { RestaurantStore } from './store/RestaurantStore';
 import { RestaurantTransportLayer } from './store/RestaurantTransportLayer';
+import { IRestaurantStore } from './store/IRestaurantStore';
 
 const BASE_URL = `https://api.outsidein.dev/${import.meta.env.VITE_API_KEY}`;
 
 export const RestaurantStoreContext = createContext<
-  RestaurantStore | undefined
+  IRestaurantStore | undefined
 >(undefined);
 
 RestaurantStoreContext.displayName = 'RestaurantStoreContext';
