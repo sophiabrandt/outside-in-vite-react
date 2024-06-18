@@ -1,19 +1,20 @@
 import { render, screen } from '@testing-library/react';
 import { RestaurantList } from '@/restaurants/ui/RestaurantList';
+import { faker, simpleFaker } from '@faker-js/faker';
 
 describe('RestaurantList', () => {
   it('should display the restaurants', () => {
     // Arrange
-    const sushiPlace = 'Sushi Place';
-    const pizzaPlace = 'Pizza Place';
+    const restaurant1 = faker.company.name();
+    const restaurant2 = faker.company.name();
     const restaurants = [
       {
-        name: sushiPlace,
-        id: 1,
+        name: restaurant1,
+        id: simpleFaker.number.int(100),
       },
       {
-        name: pizzaPlace,
-        id: 2,
+        name: restaurant2,
+        id: simpleFaker.number.int(100),
       },
     ];
 
@@ -21,7 +22,7 @@ describe('RestaurantList', () => {
     render(<RestaurantList restaurants={restaurants} />);
 
     // Assert
-    expect(screen.getByText(sushiPlace)).toBeInTheDocument();
-    expect(screen.getByText(pizzaPlace)).toBeInTheDocument();
+    expect(screen.getByText(restaurant1)).toBeInTheDocument();
+    expect(screen.getByText(restaurant2)).toBeInTheDocument();
   });
 });
