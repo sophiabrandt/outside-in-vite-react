@@ -1,29 +1,30 @@
 import { test, expect } from '@playwright/test';
+import { faker, simpleFaker } from '@faker-js/faker';
 
 test.describe('Listing Restaurants', () => {
   test('shows restaurants from server', async ({ page }) => {
     // Arrange
-    const sushiPlace = 'Sushi Place';
-    const pizzaPlace = 'Pizza Place';
-    await page.route('https://api.outsidein.dev/*/restaurants', async route => {
+    const restaurant1 = faker.company.name();
+    const restaurant2 = faker.company.name();
+    await page.route('**/api.outsidein.dev/*/restaurants', route => {
       const json = [
         {
-          name: sushiPlace,
-          id: 1,
+          name: restaurant1,
+          id: simpleFaker.number.int(10),
         },
         {
-          name: pizzaPlace,
-          id: 2,
+          name: restaurant2,
+          id: simpleFaker.number.int(10),
         },
       ];
-      await route.fulfill({ json });
+      route.fulfill({ json });
     });
 
     // Act
     await page.goto('/');
 
     // Assert
-    await expect(page.getByText(sushiPlace)).toBeVisible();
-    await expect(page.getByText(pizzaPlace)).toBeVisible();
+    await expect(page.getByText(restaurant1)).toBeVisible();
+    await expect(page.getByText(restaurant2)).toBeVisible();
   });
 });
