@@ -5,6 +5,23 @@ import { Restaurant } from '../types/Restaurant';
 export class RestaurantTransportLayer implements ITransportLayer<Restaurant> {
   constructor(private readonly baseUrl: string) {}
 
+  async create(data: Restaurant): Promise<Restaurant> {
+    try {
+      const response = await fetch(`${this.baseUrl}/restaurants`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      return await response.json();
+    } catch (error) {
+      throw new Error(
+        `Failed to create restaurant: ${error instanceof Error && error.message}`
+      );
+    }
+  }
+
   async get(): Promise<Restaurant[]> {
     try {
       const response = await fetch(`${this.baseUrl}/restaurants`);

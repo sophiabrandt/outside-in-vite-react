@@ -1,4 +1,4 @@
-import { flow, observable, makeObservable } from 'mobx';
+import { flow, makeAutoObservable } from 'mobx';
 import { Restaurant } from '../types/Restaurant';
 import { ITransportLayer } from './ITransportLayer';
 import { IRestaurantStore } from './IRestaurantStore';
@@ -10,17 +10,25 @@ export class RestaurantStore implements IRestaurantStore {
   isLoadingError: boolean;
 
   constructor(transportLayer: ITransportLayer<Restaurant>) {
-    makeObservable(this, {
-      restaurants: observable,
-      getRestaurants: flow,
-      isLoading: observable,
-      isLoadingError: observable,
-    });
+    makeAutoObservable(this);
     this.transportLayer = transportLayer;
     this.isLoading = false;
     this.isLoadingError = false;
     this.restaurants = [];
+    this.createRestaurant = this.createRestaurant.bind(this);
   }
+
+  createRestaurant = flow(function* (
+    this: RestaurantStore,
+    restaurant: Partial<Restaurant>
+  ) {
+    const created: Restaurant | undefined =
+      yield this.transportLayer.create(restaurant);
+    if (created) {
+      this.restaurants.push(created);
+    }
+    return created;
+  });
 
   getRestaurants = flow(function* (this: RestaurantStore) {
     this.isLoading = true;
