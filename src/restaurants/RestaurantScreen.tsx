@@ -21,7 +21,10 @@ export const RestaurantScreen = observer(() => {
     <Card sx={{ marginBlockStart: '2em' }}>
       <CardContent>
         <Typography variant="h5">Restaurants</Typography>
-        <NewRestaurantForm createRestaurant={store.createRestaurant} />
+        <NewRestaurantForm
+          createRestaurant={store.createRestaurant}
+          isSaving={store.isSaving}
+        />
         {store.isLoadingError ? (
           <Alert severity="error">Restaurants could not be loaded.</Alert>
         ) : null}

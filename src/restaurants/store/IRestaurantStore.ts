@@ -11,4 +11,5 @@ export interface IRestaurantStore {
   isLoading: boolean;
   isLoadingError: boolean;
   transportLayer: ITransportLayer<Restaurant>;
+  isSaving: boolean;
 }

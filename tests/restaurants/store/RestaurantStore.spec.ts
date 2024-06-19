@@ -172,5 +172,33 @@ describe('RestaurantStore', () => {
       // Assert
       expect(actual).toContainEqual(expected);
     });
+
+    it('sets the "isSaving" flag while saving', async () => {
+      // Arrange
+      const restaurantName = faker.company.name();
+      const expected = true;
+      const sut = new RestaurantStore(mockTransportLayer);
+
+      // Act
+      sut.createRestaurant({ name: restaurantName });
+      const actual = sut.isSaving;
+
+      // Assert
+      expect(actual).toBe(expected);
+    });
+
+    it('clears the "isSaving" flag when saving is finished', async () => {
+      // Arrange
+      const restaurantName = faker.company.name();
+      const expected = false;
+      const sut = new RestaurantStore(mockTransportLayer);
+
+      // Act
+      await sut.createRestaurant({ name: restaurantName });
+      const actual = sut.isSaving;
+
+      // Assert
+      expect(actual).toBe(expected);
+    });
   });
 });

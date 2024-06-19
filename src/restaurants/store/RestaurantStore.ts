@@ -4,17 +4,15 @@ import { ITransportLayer } from './ITransportLayer';
 import { IRestaurantStore } from './IRestaurantStore';
 
 export class RestaurantStore implements IRestaurantStore {
-  restaurants: Restaurant[];
-  transportLayer: ITransportLayer<Restaurant>;
-  isLoading: boolean;
-  isLoadingError: boolean;
+  restaurants: Restaurant[] = [];
+  readonly transportLayer: ITransportLayer<Restaurant>;
+  isLoading = false;
+  isLoadingError = false;
+  isSaving = false;
 
   constructor(transportLayer: ITransportLayer<Restaurant>) {
     makeAutoObservable(this);
     this.transportLayer = transportLayer;
-    this.isLoading = false;
-    this.isLoadingError = false;
-    this.restaurants = [];
     this.createRestaurant = this.createRestaurant.bind(this);
   }
 
@@ -22,11 +20,13 @@ export class RestaurantStore implements IRestaurantStore {
     this: RestaurantStore,
     restaurant: Partial<Restaurant>
   ) {
+    this.isSaving = true;
     const created: Restaurant | undefined =
       yield this.transportLayer.create(restaurant);
     if (created) {
       this.restaurants.push(created);
     }
+    this.isSaving = false;
     return created;
   });
 
