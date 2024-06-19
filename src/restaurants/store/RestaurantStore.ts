@@ -9,6 +9,7 @@ export class RestaurantStore implements IRestaurantStore {
   isLoading = false;
   isLoadingError = false;
   isSaving = false;
+  isSavingError = false;
 
   constructor(transportLayer: ITransportLayer<Restaurant>) {
     makeAutoObservable(this);
@@ -21,6 +22,7 @@ export class RestaurantStore implements IRestaurantStore {
     restaurant: Partial<Restaurant>
   ) {
     this.isSaving = true;
+    this.isSavingError = false;
     try {
       const created: Restaurant | undefined =
         yield this.transportLayer.create(restaurant);
@@ -31,11 +33,12 @@ export class RestaurantStore implements IRestaurantStore {
       return created;
     } catch (error) {
       this.isSaving = false;
+      this.isSavingError = true;
       /* v8 ignore start */
       console.error(
         `Error saving restaurant ${error instanceof Error && error.message}`
       );
-      /* v8 ignore end */
+      /* v8 ignore stop */
     }
   });
 
@@ -54,7 +57,7 @@ export class RestaurantStore implements IRestaurantStore {
       console.error(
         `Error loading restaurants ${error instanceof Error && error.message}`
       );
-      /* v8 ignore end */
+      /* v8 ignore stop */
     }
   });
 }

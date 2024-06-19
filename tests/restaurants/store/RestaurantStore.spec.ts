@@ -206,6 +206,24 @@ describe('RestaurantStore', () => {
     });
 
     describe('when saving fails', () => {
+      it('should set the "savingError" flag', async () => {
+        const consoleError = console.error;
+        console.error = vi.fn();
+        // Arrange
+        const restaurantName = faker.company.name();
+        const expected = true;
+        mockTransportLayer.create = vi.fn().mockRejectedValue('TEST ERROR');
+        const sut = new RestaurantStore(mockTransportLayer);
+
+        // Act
+        await sut.createRestaurant({ name: restaurantName });
+        const actual = sut.isSavingError;
+
+        // Assert
+        expect(actual).toBe(expected);
+        console.error = consoleError;
+      });
+
       it('should clear the "isSaving" flag', async () => {
         const consoleError = console.error;
         console.error = vi.fn();

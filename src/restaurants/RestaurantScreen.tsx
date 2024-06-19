@@ -26,8 +26,16 @@ export const RestaurantScreen = observer(() => {
           isSaving={store.isSaving}
         />
         {store.isLoadingError ? (
-          <Alert severity="error">Restaurants could not be loaded.</Alert>
+          <Alert data-testid="loading-error" severity="error">
+            Restaurants could not be loaded.
+          </Alert>
         ) : null}
+        {store.isSavingError ? (
+          <Alert data-testid="saving-error" severity="error">
+            Restaurant could not be saved.
+          </Alert>
+        ) : null}
+
         {store.isLoading ? (
           <CircularProgress />
         ) : (
