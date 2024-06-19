@@ -21,13 +21,22 @@ export class RestaurantStore implements IRestaurantStore {
     restaurant: Partial<Restaurant>
   ) {
     this.isSaving = true;
-    const created: Restaurant | undefined =
-      yield this.transportLayer.create(restaurant);
-    if (created) {
-      this.restaurants.push(created);
+    try {
+      const created: Restaurant | undefined =
+        yield this.transportLayer.create(restaurant);
+      if (created) {
+        this.restaurants.push(created);
+      }
+      this.isSaving = false;
+      return created;
+    } catch (error) {
+      this.isSaving = false;
+      /* v8 ignore start */
+      console.error(
+        `Error saving restaurant ${error instanceof Error && error.message}`
+      );
+      /* v8 ignore end */
     }
-    this.isSaving = false;
-    return created;
   });
 
   getRestaurants = flow(function* (this: RestaurantStore) {
