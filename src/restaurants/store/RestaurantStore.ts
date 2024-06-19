@@ -1,26 +1,46 @@
-import { flow, observable, makeObservable } from 'mobx';
+import { flow, makeAutoObservable } from 'mobx';
 import { Restaurant } from '../types/Restaurant';
 import { ITransportLayer } from './ITransportLayer';
 import { IRestaurantStore } from './IRestaurantStore';
 
 export class RestaurantStore implements IRestaurantStore {
-  restaurants: Restaurant[];
-  transportLayer: ITransportLayer<Restaurant>;
-  isLoading: boolean;
-  isLoadingError: boolean;
+  restaurants: Restaurant[] = [];
+  readonly transportLayer: ITransportLayer<Restaurant>;
+  isLoading = false;
+  isLoadingError = false;
+  isSaving = false;
+  isSavingError = false;
 
   constructor(transportLayer: ITransportLayer<Restaurant>) {
-    makeObservable(this, {
-      restaurants: observable,
-      getRestaurants: flow,
-      isLoading: observable,
-      isLoadingError: observable,
-    });
+    makeAutoObservable(this);
     this.transportLayer = transportLayer;
-    this.isLoading = false;
-    this.isLoadingError = false;
-    this.restaurants = [];
+    this.createRestaurant = this.createRestaurant.bind(this);
   }
+
+  createRestaurant = flow(function* (
+    this: RestaurantStore,
+    restaurant: Partial<Restaurant>
+  ) {
+    this.isSaving = true;
+    this.isSavingError = false;
+    try {
+      const created: Restaurant | undefined =
+        yield this.transportLayer.create(restaurant);
+      if (created) {
+        this.restaurants.push(created);
+      }
+      this.isSaving = false;
+      return created;
+    } catch (error) {
+      this.isSaving = false;
+      this.isSavingError = true;
+      /* v8 ignore start */
+      console.error(
+        `Error saving restaurant ${error instanceof Error && error.message}`
+      );
+      /* v8 ignore stop */
+    }
+  });
 
   getRestaurants = flow(function* (this: RestaurantStore) {
     this.isLoading = true;
@@ -37,7 +57,7 @@ export class RestaurantStore implements IRestaurantStore {
       console.error(
         `Error loading restaurants ${error instanceof Error && error.message}`
       );
-      /* v8 ignore end */
+      /* v8 ignore stop */
     }
   });
 }

@@ -54,7 +54,7 @@ describe('RestaurantScreen', () => {
       renderWithContext(<RestaurantScreen />);
 
       // Assert
-      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('loading-error')).not.toBeInTheDocument();
     });
 
     it('should render the restaurants received from server', async () => {
@@ -86,7 +86,34 @@ describe('RestaurantScreen', () => {
       renderWithContext(<RestaurantScreen />);
 
       // Assert
-      expect(screen.getByRole('alert')).toBeInTheDocument();
+      expect(screen.getByTestId('loading-error')).toBeInTheDocument();
+    });
+  });
+
+  describe('when saving succeeds', () => {
+    it('should not display the error message', async () => {
+      // Arrange
+      const { renderWithContext } = setup(mockStore);
+
+      // Act
+      renderWithContext(<RestaurantScreen />);
+
+      // Assert
+      expect(screen.queryByTestId('saving-error')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('when saving fails', () => {
+    it('should display the error message', async () => {
+      // Arrange
+      mockStore.isSavingError = true;
+      const { renderWithContext } = setup(mockStore);
+
+      // Act
+      renderWithContext(<RestaurantScreen />);
+
+      // Assert
+      expect(screen.getByTestId('saving-error')).toBeVisible();
     });
   });
 
