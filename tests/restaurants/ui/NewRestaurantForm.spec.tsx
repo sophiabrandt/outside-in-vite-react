@@ -20,11 +20,23 @@ describe('NewRestaurantForm', () => {
     // Arrange
     const { user, newRestaurant } = setup({ isSaving: true });
 
-    // handleUserEvents
+    // Act
     const { button } = await handleUserEvents(user, newRestaurant);
 
     // Assert
     expect(button).toBeDisabled();
+  });
+
+  it('clears the text field', async () => {
+    // Arrange
+    const { user, newRestaurant } = setup();
+
+    // Act
+    const { button, input } = await handleUserEvents(user, newRestaurant);
+    await user.click(button);
+
+    // Assert
+    expect(input).toHaveValue('');
   });
 
   function setup({ isSaving } = { isSaving: false }) {
@@ -44,6 +56,6 @@ describe('NewRestaurantForm', () => {
     const input = screen.getByRole('textbox', { name: 'Add Restaurant' });
     await user.type(input, restaurantName);
     const button = screen.getByRole('button', { name: 'Add' });
-    return { button };
+    return { button, input };
   }
 });

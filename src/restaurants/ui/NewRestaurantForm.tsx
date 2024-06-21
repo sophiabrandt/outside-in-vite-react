@@ -18,13 +18,14 @@ interface NewRestaurantFormProps {
 
 export const NewRestaurantForm = observer(
   ({ createRestaurant, isSaving }: NewRestaurantFormProps) => {
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       const form = event.currentTarget;
       const formElements = form.elements as typeof form.elements & {
         addRestaurant: { value: string };
       };
-      createRestaurant({ name: formElements.addRestaurant.value });
+      await createRestaurant({ name: formElements.addRestaurant.value });
+      form.reset();
     };
 
     return (
