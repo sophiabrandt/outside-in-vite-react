@@ -1,13 +1,8 @@
-import {
-  Button,
-  FormControl,
-  FormHelperText,
-  Input,
-  InputLabel,
-} from '@mui/material';
+import { Button, FormControl, FormHelperText, TextField } from '@mui/material';
 import { Restaurant } from '../types/Restaurant';
 import { CancellablePromise } from 'mobx/dist/internal';
 import { observer } from 'mobx-react-lite';
+import { useCallback, useState } from 'react';
 
 interface NewRestaurantFormProps {
   createRestaurant: (
@@ -18,21 +13,42 @@ interface NewRestaurantFormProps {
 
 export const NewRestaurantForm = observer(
   ({ createRestaurant, isSaving }: NewRestaurantFormProps) => {
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      const form = event.currentTarget;
-      const formElements = form.elements as typeof form.elements & {
-        addRestaurant: { value: string };
-      };
-      await createRestaurant({ name: formElements.addRestaurant.value });
-      form.reset();
-    };
+    const [isValidationError, setIsValidationError] = useState<boolean>(false);
+
+    const handleValidationError = useCallback(
+      (restaurantName: string | undefined) => {
+        if (!restaurantName) {
+          setIsValidationError(true);
+        } else {
+          setIsValidationError(false);
+        }
+      },
+      [setIsValidationError]
+    );
+
+    const handleSubmit = useCallback(
+      async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const formElements = form.elements as typeof form.elements & {
+          addRestaurant: { value: string };
+        };
+        const restaurantName = formElements.addRestaurant.value;
+        handleValidationError(restaurantName);
+        await createRestaurant({ name: restaurantName });
+        form.reset();
+      },
+      [createRestaurant, handleValidationError]
+    );
 
     return (
-      <form onSubmit={handleSubmit}>
+      <form noValidate onSubmit={handleSubmit}>
         <FormControl fullWidth={true}>
-          <InputLabel htmlFor="addRestaurant">Add Restaurant</InputLabel>
-          <Input
+          <TextField
+            label="Add Restaurant"
+            variant="outlined"
+            error={isValidationError}
+            helperText={isValidationError ? 'Name is required' : ''}
             name="restaurant"
             id="addRestaurant"
             aria-describedby="add-restaurant-helper-text"
@@ -40,7 +56,11 @@ export const NewRestaurantForm = observer(
           <FormHelperText id="add-restaurant-helper-text">
             Add a new restaurant to the list.
           </FormHelperText>
-          <Button disabled={isSaving} type="submit" variant="contained">
+          <Button
+            sx={{ marginTop: '2em' }}
+            disabled={isSaving}
+            type="submit"
+            variant="contained">
             Add
           </Button>
         </FormControl>
