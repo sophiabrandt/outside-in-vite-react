@@ -15,13 +15,13 @@ export const NewRestaurantForm = observer(
   ({ createRestaurant, isSaving }: NewRestaurantFormProps) => {
     const [isValidationError, setIsValidationError] = useState<boolean>(false);
 
-    const handleValidationError = useCallback(
-      (restaurantName: string | undefined) => {
+    const validate = useCallback(
+      (restaurantName: string | undefined): boolean => {
         if (!restaurantName) {
           setIsValidationError(true);
-        } else {
-          setIsValidationError(false);
+          return false;
         }
+        return true;
       },
       [setIsValidationError]
     );
@@ -29,16 +29,13 @@ export const NewRestaurantForm = observer(
     const handleSubmit = useCallback(
       async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const form = event.currentTarget;
-        const formElements = form.elements as typeof form.elements & {
-          addRestaurant: { value: string };
-        };
-        const restaurantName = formElements.addRestaurant.value;
-        handleValidationError(restaurantName);
+        const { form, restaurantName } = readForm(event);
+        if (!validate(restaurantName)) return;
+        setIsValidationError(false);
         await createRestaurant({ name: restaurantName });
         form.reset();
       },
-      [createRestaurant, handleValidationError]
+      [setIsValidationError, createRestaurant, validate]
     );
 
     return (
@@ -57,7 +54,7 @@ export const NewRestaurantForm = observer(
             Add a new restaurant to the list.
           </FormHelperText>
           <Button
-            sx={{ marginTop: '2em' }}
+            sx={{ marginTop: '1em' }}
             disabled={isSaving}
             type="submit"
             variant="contained">
@@ -68,3 +65,12 @@ export const NewRestaurantForm = observer(
     );
   }
 );
+
+function readForm(event: React.FormEvent<HTMLFormElement>) {
+  const form = event.currentTarget;
+  const formElements = form.elements as typeof form.elements & {
+    addRestaurant: { value: string };
+  };
+  const restaurantName = formElements.addRestaurant.value;
+  return { form, restaurantName };
+}

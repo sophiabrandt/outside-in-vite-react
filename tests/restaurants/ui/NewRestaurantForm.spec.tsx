@@ -71,6 +71,18 @@ describe('NewRestaurantForm', () => {
       // Assert
       expect(screen.getByText(/name is required/i)).toBeInTheDocument();
     });
+
+    it('should not send a request to the API', async () => {
+      // Arrange
+      const { user, createRestaurant } = setup();
+
+      // Act
+      const button = screen.getByRole('button', { name: 'Add' });
+      await user.click(button);
+
+      // Assert
+      expect(createRestaurant).not.toHaveBeenCalled();
+    });
   });
 
   describe('when correcting a validation error', () => {
