@@ -32,7 +32,7 @@ export const RestaurantScreen = observer(() => {
         ) : null}
         {store.isSavingError ? (
           <Alert data-testid="saving-error" severity="error">
-            Restaurant could not be saved.
+            Restaurant could not be saved. Please try again later.
           </Alert>
         ) : null}
 

@@ -4,19 +4,11 @@ import { render, screen } from '@testing-library/react';
 import { faker } from '@faker-js/faker';
 
 describe('NewRestaurantForm', () => {
-  const serverError = 'Server error';
-
   describe('initially', () => {
     it('should not display a validation error', () => {
       setup();
 
       expect(screen.queryByText(/name is required/i)).not.toBeInTheDocument();
-    });
-
-    it('should not display a server error', () => {
-      setup();
-
-      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     });
   });
 
@@ -54,7 +46,7 @@ describe('NewRestaurantForm', () => {
       expect(screen.queryByText(/name is required/i)).not.toBeInTheDocument();
     });
 
-    it('should clear the text field after submitting', async () => {
+    it('should clear the text field after submitting successfully', async () => {
       // Arrange
       const { user, newRestaurant } = setup();
 
@@ -64,18 +56,6 @@ describe('NewRestaurantForm', () => {
 
       // Assert
       expect(input).toHaveValue('');
-    });
-
-    it('should not display a server error after successfully submitting', async () => {
-      // Arrange
-      const { user, newRestaurant } = setup();
-
-      // Act
-      await typeIntoForm(user, newRestaurant);
-      await submitForm(user);
-
-      // Assert
-      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     });
   });
 
@@ -124,7 +104,7 @@ describe('NewRestaurantForm', () => {
     it('should not clear the form', async () => {
       // Arrange
       const { user, newRestaurant } = setup({
-        createRestaurant: vi.fn().mockRejectedValueOnce(serverError),
+        createRestaurant: vi.fn().mockRejectedValueOnce('SERVER ERROR'),
       });
 
       // Act
@@ -134,43 +114,12 @@ describe('NewRestaurantForm', () => {
       // Assert
       expect(input).toHaveValue(newRestaurant);
     });
-
-    it('should display a server error', async () => {
-      // Arrange
-      const { user, newRestaurant } = setup({
-        createRestaurant: vi.fn().mockRejectedValueOnce(serverError),
-      });
-
-      // Act
-      await typeIntoForm(user, newRestaurant);
-      await submitForm(user);
-
-      // Assert
-      expect(screen.getByRole('alert')).toBeVisible();
-    });
   });
 
-  describe('when retrying after store rejects', () => {
-    it('should not display a server error', async () => {
-      // Arrange
-      const { user, newRestaurant } = setup({
-        createRestaurant: vi
-          .fn()
-          .mockRejectedValueOnce(serverError)
-          .mockResolvedValueOnce({}),
-      });
-
-      // Act
-      await typeIntoForm(user, newRestaurant);
-      await submitForm(user);
-      await submitForm(user);
-
-      // Assert
-      expect(screen.queryByRole('alert')).not.toBeInTheDocument();
-    });
-  });
-
-  function setup({ isSaving = false, createRestaurant = vi.fn() } = {}) {
+  function setup({
+    isSaving = false,
+    createRestaurant = vi.fn().mockResolvedValueOnce({}),
+  } = {}) {
     const user = userEvent.setup();
     const newRestaurant = faker.company.name();
     render(

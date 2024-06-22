@@ -1,10 +1,4 @@
-import {
-  Alert,
-  Button,
-  FormControl,
-  FormHelperText,
-  TextField,
-} from '@mui/material';
+import { Button, FormControl, FormHelperText, TextField } from '@mui/material';
 import { Restaurant } from '../types/Restaurant';
 import { CancellablePromise } from 'mobx/dist/internal';
 import { observer } from 'mobx-react-lite';
@@ -20,7 +14,6 @@ interface NewRestaurantFormProps {
 export const NewRestaurantForm = observer(
   ({ createRestaurant, isSaving }: NewRestaurantFormProps) => {
     const [isValidationError, setIsValidationError] = useState<boolean>(false);
-    const [isServerError, setIsServerError] = useState<boolean>(false);
 
     const validate = useCallback(
       (restaurantName: string | undefined): boolean => {
@@ -28,6 +21,7 @@ export const NewRestaurantForm = observer(
           setIsValidationError(true);
           return false;
         }
+        setIsValidationError(false);
         return true;
       },
       [setIsValidationError]
@@ -36,27 +30,30 @@ export const NewRestaurantForm = observer(
     const handleSubmit = useCallback(
       async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
         const { form, restaurantName } = readForm(event);
         if (!validate(restaurantName)) return;
-        setIsValidationError(false);
+
         try {
-          await createRestaurant({ name: restaurantName });
-          setIsServerError(false);
-          form.reset();
+          const response = await createRestaurant({
+            name: restaurantName,
+          });
+          if (response) {
+            form.reset();
+          }
         } catch (error) {
-          setIsServerError(true);
+          /* v8 ignore start */
+          console.error(
+            `Error saving restaurant: ${error instanceof Error ? error.message : error} `
+          );
+          /* v8 ignore stop */
         }
       },
-      [setIsValidationError, createRestaurant, validate]
+      [createRestaurant, validate]
     );
 
     return (
       <form noValidate onSubmit={handleSubmit}>
-        {isServerError ? (
-          <Alert severity="error" role="alert">
-            The restaurant could not be saved. Please try agian later.
-          </Alert>
-        ) : null}
         <FormControl fullWidth={true}>
           <TextField
             label="Add Restaurant"

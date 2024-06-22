@@ -36,7 +36,7 @@ export class RestaurantStore implements IRestaurantStore {
       this.isSavingError = true;
       /* v8 ignore start */
       console.error(
-        `Error saving restaurant ${error instanceof Error && error.message}`
+        `Error saving restaurant: ${error instanceof Error ? error.message : error}`
       );
       /* v8 ignore stop */
     }
