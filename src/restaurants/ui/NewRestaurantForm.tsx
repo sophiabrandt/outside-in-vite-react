@@ -1,4 +1,10 @@
-import { Button, FormControl, FormHelperText, TextField } from '@mui/material';
+import {
+  Alert,
+  Button,
+  FormControl,
+  FormHelperText,
+  TextField,
+} from '@mui/material';
 import { Restaurant } from '../types/Restaurant';
 import { CancellablePromise } from 'mobx/dist/internal';
 import { observer } from 'mobx-react-lite';
@@ -14,6 +20,7 @@ interface NewRestaurantFormProps {
 export const NewRestaurantForm = observer(
   ({ createRestaurant, isSaving }: NewRestaurantFormProps) => {
     const [isValidationError, setIsValidationError] = useState<boolean>(false);
+    const [isServerError, setIsServerError] = useState<boolean>(false);
 
     const validate = useCallback(
       (restaurantName: string | undefined): boolean => {
@@ -32,14 +39,24 @@ export const NewRestaurantForm = observer(
         const { form, restaurantName } = readForm(event);
         if (!validate(restaurantName)) return;
         setIsValidationError(false);
-        await createRestaurant({ name: restaurantName });
-        form.reset();
+        try {
+          await createRestaurant({ name: restaurantName });
+          setIsServerError(false);
+          form.reset();
+        } catch (error) {
+          setIsServerError(true);
+        }
       },
       [setIsValidationError, createRestaurant, validate]
     );
 
     return (
       <form noValidate onSubmit={handleSubmit}>
+        {isServerError ? (
+          <Alert severity="error" role="alert">
+            The restaurant could not be saved. Please try agian later.
+          </Alert>
+        ) : null}
         <FormControl fullWidth={true}>
           <TextField
             label="Add Restaurant"
