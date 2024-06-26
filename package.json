@@ -11,7 +11,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier -w .",
     "preview": "vite preview",
-    "test": "vitest",
+    "test": "vitest run",
     "test:cov": "vitest --coverage",
     "test:watch": "vitest --watch",
     "test:e2e": "playwright test",
