@@ -11,7 +11,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier -w .",
     "preview": "vite preview",
-    "test": "vitest",
+    "test": "vitest run",
     "test:cov": "vitest --coverage",
     "test:watch": "vitest --watch",
     "test:e2e": "playwright test",
@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^8.4.1",
-    "@playwright/test": "^1.44.1",
+    "@playwright/test": "^1.46.0-alpha-2024-06-26",
     "@testing-library/dom": "^10.1.0",
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/react": "^16.0.0",
