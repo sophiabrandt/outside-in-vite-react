@@ -103,6 +103,7 @@ describe('NewRestaurantForm', () => {
   describe('when store rejects', () => {
     it('should not clear the form', async () => {
       // Arrange
+      vi.spyOn(console, 'error').mockImplementation(() => {});
       const { user, newRestaurant } = setup({
         createRestaurant: vi.fn().mockRejectedValueOnce('SERVER ERROR'),
       });

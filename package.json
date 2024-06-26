@@ -12,6 +12,7 @@
     "format": "prettier -w .",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:verbose": "vitest --reporter=verbose",
     "test:cov": "vitest --coverage",
     "test:watch": "vitest --watch",
     "test:e2e": "playwright test",
