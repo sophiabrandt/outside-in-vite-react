@@ -39,6 +39,6 @@ bun start
 ## Tests
 
 ```bash
-bun test
-bun test:e2e
+bun run test
+bun run test:e2e # before the first run you will need to do: `bunx playwright install`
 ```
