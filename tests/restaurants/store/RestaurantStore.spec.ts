@@ -8,7 +8,7 @@ describe('RestaurantStore', () => {
 
   beforeEach(() => {
     mockTransportLayer = {
-      get: vi.fn(),
+      get: vi.fn().mockResolvedValueOnce([]),
       create: vi.fn(),
     };
   });
@@ -18,12 +18,12 @@ describe('RestaurantStore', () => {
       // Arrange
       const expected = [
         {
-          name: 'Sushi Place',
-          id: 1,
+          name: faker.lorem.words(2),
+          id: simpleFaker.number.int(10),
         },
         {
-          name: 'Pizza Place',
-          id: 2,
+          name: faker.lorem.words(2),
+          id: simpleFaker.number.int(10),
         },
       ];
       const spy = vi
@@ -32,110 +32,12 @@ describe('RestaurantStore', () => {
       const sut = new RestaurantStore(mockTransportLayer);
 
       // Act
-      const actual = await sut.getRestaurants();
+      await sut.getRestaurants();
+      const actual = sut.restaurantsResource.read();
 
       // Assert
       expect(spy).toHaveBeenCalled();
       expect(actual).toEqual(expected);
-    });
-
-    it('should set a loading flag', async () => {
-      // Arrange
-      const sut = new RestaurantStore(mockTransportLayer);
-      expect(sut.isLoading).toBe(false);
-
-      // Act
-      sut.getRestaurants();
-
-      // Assert
-      expect(sut.isLoading).toBe(true);
-    });
-
-    it('should initially flag "isLoading" as false', async () => {
-      const sut = new RestaurantStore(mockTransportLayer);
-
-      expect(sut.isLoading).toBe(false);
-    });
-
-    describe('when loading', () => {
-      it('should set the loading flag', async () => {
-        // Arrange
-        const sut = new RestaurantStore(mockTransportLayer);
-
-        // Act
-        sut.getRestaurants();
-
-        // Assert
-        expect(sut.isLoading).toBe(true);
-      });
-    });
-
-    describe('when loading suceeeds', () => {
-      it('should clear the loading flag', async () => {
-        // Arrange
-        const sut = new RestaurantStore(mockTransportLayer);
-
-        // Act
-        await sut.getRestaurants();
-
-        // Assert
-        expect(sut.isLoading).toBe(false);
-      });
-
-      it('should store the restaurants', async () => {
-        // Arrange
-        const expected = [
-          {
-            id: simpleFaker.number.int(100),
-            name: faker.company.name(),
-          },
-          {
-            id: simpleFaker.number.int(100),
-            name: faker.company.name(),
-          },
-        ];
-        mockTransportLayer.get = vi.fn().mockResolvedValueOnce(expected);
-        const sut = new RestaurantStore(mockTransportLayer);
-
-        // Act
-        await sut.getRestaurants();
-
-        // Assert
-        const actual = sut.restaurants;
-        expect(actual).toStrictEqual(expected);
-      });
-    });
-
-    describe('when loading fails', () => {
-      it('should clear the loading flag', async () => {
-        // Arrange
-        const consoleError = console.error;
-        console.error = vi.fn();
-        mockTransportLayer.get = vi.fn().mockRejectedValue('TEST ERROR');
-        const sut = new RestaurantStore(mockTransportLayer);
-
-        // Act
-        await sut.getRestaurants();
-
-        // Assert
-        expect(sut.isLoading).toBe(false);
-        console.error = consoleError;
-      });
-
-      it('should set a loading error flag', async () => {
-        // Arrange
-        const consoleError = console.error;
-        console.error = vi.fn();
-        mockTransportLayer.get = vi.fn().mockRejectedValue('TEST ERROR');
-        const sut = new RestaurantStore(mockTransportLayer);
-
-        // Act
-        await sut.getRestaurants();
-
-        // Assert
-        expect(sut.isLoadingError).toBe(true);
-        console.error = consoleError;
-      });
     });
   });
 
@@ -146,14 +48,14 @@ describe('RestaurantStore', () => {
         const expected = {
           name: faker.company.name(),
         };
-        const spy = vi.spyOn(mockTransportLayer, 'create');
+        const create = vi.spyOn(mockTransportLayer, 'create');
         const sut = new RestaurantStore(mockTransportLayer);
 
         // Act
         sut.createRestaurant(expected);
 
         // Assert
-        expect(spy).toHaveBeenNthCalledWith(1, expected);
+        expect(create).toHaveBeenNthCalledWith(1, expected);
       });
 
       it('should set the "isSaving" flag', async () => {
@@ -186,7 +88,7 @@ describe('RestaurantStore', () => {
         expect(actual).toBe(expected);
       });
 
-      it('should store the restaurant in the restaurant list', async () => {
+      it('should refresh the restaurants resource', async () => {
         // Arrange
         const restaurantName = faker.company.name();
         const expected = {
@@ -197,8 +99,9 @@ describe('RestaurantStore', () => {
         const sut = new RestaurantStore(mockTransportLayer);
 
         // Act
+        await sut.getRestaurants();
         await sut.createRestaurant({ name: restaurantName });
-        const actual = sut.restaurants;
+        const actual = sut.restaurantsResource.read();
 
         // Assert
         expect(actual).toContainEqual(expected);
@@ -260,7 +163,7 @@ describe('RestaurantStore', () => {
         // Act
         await sut.getRestaurants();
         await sut.createRestaurant({ name: restaurantName });
-        const actual = sut.restaurants;
+        const actual = sut.restaurantsResource.read();
 
         // Assert
         expect(actual).toEqual(expected);

@@ -1,6 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { RestaurantList } from '@/restaurants/ui/RestaurantList';
 import { faker, simpleFaker } from '@faker-js/faker';
+import { IRestaurantStore } from '@/restaurants/store/IRestaurantStore';
+import { assertType } from '../../assert-type';
 
 describe('RestaurantList', () => {
   it('should display the restaurants', () => {
@@ -17,9 +19,17 @@ describe('RestaurantList', () => {
         id: simpleFaker.number.int(100),
       },
     ];
+    const mockResource = {
+      read: vi.fn().mockReturnValue(restaurants),
+      update: vi.fn(),
+      refresh: vi.fn(),
+    };
+    const mockStore = assertType<IRestaurantStore>({
+      restaurantsResource: mockResource,
+    });
 
     // Act
-    render(<RestaurantList restaurants={restaurants} />);
+    render(<RestaurantList store={mockStore} />);
 
     // Assert
     expect(screen.getByText(restaurant1)).toBeInTheDocument();
