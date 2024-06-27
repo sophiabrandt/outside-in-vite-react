@@ -21,6 +21,8 @@ export const RestaurantStoreProvider = ({
     () => new RestaurantStore(new RestaurantTransportLayer(BASE_URL)),
     []
   );
+  // initial data loading
+  store.getRestaurants();
 
   return (
     <RestaurantStoreContext.Provider value={store}>

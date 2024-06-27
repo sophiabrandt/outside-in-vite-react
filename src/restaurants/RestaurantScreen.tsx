@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useEffect } from 'react';
+import { Suspense, useCallback } from 'react';
 import { useRestaurantStore } from './hooks/useRestaurantStore';
 import { RestaurantList } from './ui/RestaurantList';
 import { observer } from 'mobx-react-lite';
@@ -15,9 +15,6 @@ import { ErrorBoundaryWithReset } from '@/ErrorBoundaryWithReset';
 
 export const RestaurantScreen = observer(() => {
   const store = useRestaurantStore();
-  useEffect(() => {
-    store.getRestaurants();
-  }, [store]);
 
   const handleReset = useCallback(() => {
     store.getRestaurants();

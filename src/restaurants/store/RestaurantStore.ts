@@ -11,9 +11,8 @@ export class RestaurantStore implements IRestaurantStore {
   isSavingError = false;
 
   constructor(transportLayer: ITransportLayer<Restaurant>) {
-    makeAutoObservable(this);
+    makeAutoObservable(this, {}, { autoBind: true });
     this.transportLayer = transportLayer;
-    this.createRestaurant = this.createRestaurant.bind(this);
   }
 
   createRestaurant = flow(function* (

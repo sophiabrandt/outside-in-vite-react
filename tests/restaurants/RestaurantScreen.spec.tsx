@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 import { assertType } from '../assert-type';
 import { RestaurantScreen } from '@/restaurants/RestaurantScreen';
@@ -71,7 +71,7 @@ describe('RestaurantScreen', () => {
       await user.click(screen.getByRole('button', { name: /try again/i }));
 
       // Assert
-      expect(mockStore.getRestaurants).toHaveBeenCalledTimes(2);
+      expect(mockStore.getRestaurants).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -100,19 +100,6 @@ describe('RestaurantScreen', () => {
       expect(
         screen.queryByTestId('restaurant-screen-loading-error')
       ).not.toBeInTheDocument();
-    });
-
-    it('should call the getRestaurants store function', async () => {
-      // Arrange
-      const { renderWithContext } = setup(mockStore);
-
-      // Act
-      renderWithContext(<RestaurantScreen />);
-
-      // Assert
-      await waitFor(() => {
-        expect(mockStore.getRestaurants).toHaveBeenCalledTimes(1);
-      });
     });
   });
 
