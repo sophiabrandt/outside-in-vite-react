@@ -2,12 +2,12 @@ import { flow, makeAutoObservable } from 'mobx';
 import { Restaurant } from '../types/Restaurant';
 import { ITransportLayer } from './ITransportLayer';
 import { IRestaurantStore } from './IRestaurantStore';
+import { Resource, createResource } from '@/utils/create-resource';
 
 export class RestaurantStore implements IRestaurantStore {
+  restaurantsResource = createResource() as Resource<Restaurant[]>;
   restaurants: Restaurant[] = [];
   readonly transportLayer: ITransportLayer<Restaurant>;
-  isLoading = false;
-  isLoadingError = false;
   isSaving = false;
   isSavingError = false;
 
@@ -28,6 +28,10 @@ export class RestaurantStore implements IRestaurantStore {
         yield this.transportLayer.create(restaurant);
       if (created) {
         this.restaurants.push(created);
+        this.restaurantsResource.refresh([
+          ...this.restaurantsResource.read(),
+          created,
+        ]);
       }
       this.isSaving = false;
       return created;
@@ -43,21 +47,10 @@ export class RestaurantStore implements IRestaurantStore {
   });
 
   getRestaurants = flow(function* (this: RestaurantStore) {
-    this.isLoading = true;
-    this.isLoadingError = false;
-    try {
-      const restaurants: Restaurant[] = yield this.transportLayer.get();
-      this.restaurants = restaurants;
-      this.isLoading = false;
-      return restaurants;
-    } catch (error) {
-      this.isLoading = false;
-      this.isLoadingError = true;
-      /* v8 ignore start */
-      console.error(
-        `Error loading restaurants ${error instanceof Error && error.message}`
-      );
-      /* v8 ignore stop */
-    }
+    const restaurants = yield this.restaurantsResource.update(
+      this.transportLayer.get()
+    );
+    this.restaurants = restaurants;
+    return restaurants;
   });
 }
