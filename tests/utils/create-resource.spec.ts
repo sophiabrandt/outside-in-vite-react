@@ -3,7 +3,11 @@ import { createResource } from '@/utils/create-resource';
 describe('createResource', () => {
   it('initially is in pending state and throws a suspender', () => {
     const resource = createResource<string>();
-    expect(resource.read).toThrow();
+    const pendingPromise = new Promise<string>(resolve => {
+      setTimeout(() => resolve('Delayed Data'), 1000);
+    });
+    resource.update(pendingPromise);
+    expect(() => resource.read()).toThrow();
   });
 
   it('updates with success and reads the result', async () => {

@@ -8,7 +8,7 @@ describe('RestaurantStore', () => {
 
   beforeEach(() => {
     mockTransportLayer = {
-      get: vi.fn(),
+      get: vi.fn().mockResolvedValueOnce([]),
       create: vi.fn(),
     };
   });
@@ -32,7 +32,8 @@ describe('RestaurantStore', () => {
       const sut = new RestaurantStore(mockTransportLayer);
 
       // Act
-      const actual = await sut.getRestaurants();
+      await sut.getRestaurants();
+      const actual = sut.restaurantsResource.read();
 
       // Assert
       expect(spy).toHaveBeenCalled();
@@ -47,14 +48,14 @@ describe('RestaurantStore', () => {
         const expected = {
           name: faker.company.name(),
         };
-        const spy = vi.spyOn(mockTransportLayer, 'create');
+        const create = vi.spyOn(mockTransportLayer, 'create');
         const sut = new RestaurantStore(mockTransportLayer);
 
         // Act
         sut.createRestaurant(expected);
 
         // Assert
-        expect(spy).toHaveBeenNthCalledWith(1, expected);
+        expect(create).toHaveBeenNthCalledWith(1, expected);
       });
 
       it('should set the "isSaving" flag', async () => {
@@ -87,7 +88,7 @@ describe('RestaurantStore', () => {
         expect(actual).toBe(expected);
       });
 
-      it('should store the restaurant in the restaurant list', async () => {
+      it('should refresh the restaurants resource', async () => {
         // Arrange
         const restaurantName = faker.company.name();
         const expected = {
@@ -98,8 +99,9 @@ describe('RestaurantStore', () => {
         const sut = new RestaurantStore(mockTransportLayer);
 
         // Act
+        await sut.getRestaurants();
         await sut.createRestaurant({ name: restaurantName });
-        const actual = sut.restaurants;
+        const actual = sut.restaurantsResource.read();
 
         // Assert
         expect(actual).toContainEqual(expected);
@@ -161,7 +163,7 @@ describe('RestaurantStore', () => {
         // Act
         await sut.getRestaurants();
         await sut.createRestaurant({ name: restaurantName });
-        const actual = sut.restaurants;
+        const actual = sut.restaurantsResource.read();
 
         // Assert
         expect(actual).toEqual(expected);

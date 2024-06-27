@@ -36,9 +36,7 @@ export const RestaurantScreen = observer(() => {
             Restaurant could not be saved. Please try again later.
           </Alert>
         ) : null}
-        <ErrorBoundaryWithReset
-          onReset={handleReset}
-          resetKeys={store.restaurants}>
+        <ErrorBoundaryWithReset onReset={handleReset}>
           <Suspense
             fallback={
               <Box data-testid="restaurant-screen-skeleton-ui">

@@ -14,7 +14,11 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({
       There was an error:{' '}
       <pre style={{ whiteSpace: 'normal' }}>{error.message}</pre>
       {canReset ? (
-        <button onClick={resetErrorBoundary}>Try again</button>
+        <button
+          data-testid="error-fallback-reset-button"
+          onClick={resetErrorBoundary}>
+          Try again
+        </button>
       ) : null}
     </div>
   );

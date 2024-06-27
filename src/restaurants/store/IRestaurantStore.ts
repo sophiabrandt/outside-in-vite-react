@@ -5,7 +5,6 @@ import { CancellablePromise } from 'mobx/dist/internal';
 
 export interface IRestaurantStore {
   restaurantsResource: Resource<Restaurant[]>;
-  restaurants: Restaurant[];
   createRestaurant: (
     restaurant: Partial<Restaurant>
   ) => CancellablePromise<Restaurant | undefined>;

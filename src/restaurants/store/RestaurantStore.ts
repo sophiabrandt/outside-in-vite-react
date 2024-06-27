@@ -6,7 +6,6 @@ import { Resource, createResource } from '@/utils/create-resource';
 
 export class RestaurantStore implements IRestaurantStore {
   restaurantsResource = createResource() as Resource<Restaurant[]>;
-  restaurants: Restaurant[] = [];
   readonly transportLayer: ITransportLayer<Restaurant>;
   isSaving = false;
   isSavingError = false;
@@ -27,7 +26,6 @@ export class RestaurantStore implements IRestaurantStore {
       const created: Restaurant | undefined =
         yield this.transportLayer.create(restaurant);
       if (created) {
-        this.restaurants.push(created);
         this.restaurantsResource.refresh([
           ...this.restaurantsResource.read(),
           created,
@@ -50,7 +48,6 @@ export class RestaurantStore implements IRestaurantStore {
     const restaurants = yield this.restaurantsResource.update(
       this.transportLayer.get()
     );
-    this.restaurants = restaurants;
     return restaurants;
   });
 }

@@ -4,16 +4,19 @@ import { assertType } from '../assert-type';
 import { RestaurantScreen } from '@/restaurants/RestaurantScreen';
 import { RestaurantStoreContext } from '@/restaurants/RestaurantContext';
 import { IRestaurantStore } from '@/restaurants/store/IRestaurantStore';
-import { createResource } from '@/utils/create-resource';
-import { Restaurant } from '@/restaurants/types/Restaurant';
+import userEvent from '@testing-library/user-event';
 
 describe('RestaurantScreen', () => {
   let mockStore: IRestaurantStore;
 
   beforeEach(() => {
     mockStore = assertType<IRestaurantStore>({
-      restaurantsResource: createResource<Restaurant[]>(),
-      getRestaurants: vi.fn(),
+      restaurantsResource: {
+        read: vi.fn().mockResolvedValue([]),
+        update: vi.fn().mockReturnValue(new Promise(() => {})),
+        refresh: vi.fn(),
+      },
+      getRestaurants: vi.fn().mockResolvedValueOnce([]),
       isLoading: false,
       isLoadingError: false,
       restaurants: [],
@@ -22,7 +25,7 @@ describe('RestaurantScreen', () => {
   });
 
   describe('when suspending', () => {
-    it('should show the skeleton ui', async () => {
+    it('should show the skeleton ui', () => {
       // Arrange
       mockStore.restaurantsResource.read = vi.fn(() => {
         throw new Promise<void>(() => {});
@@ -30,12 +33,45 @@ describe('RestaurantScreen', () => {
       const { renderWithContext } = setup(mockStore);
 
       // Act
-      waitFor(() => {
-        renderWithContext(<RestaurantScreen />);
-      });
+      renderWithContext(<RestaurantScreen />);
 
       // Assert
       expect(screen.getByTestId('restaurant-screen-skeleton-ui')).toBeVisible();
+    });
+  });
+
+  describe('when suspends errors', () => {
+    it('should show the error boundary', () => {
+      // Arrange
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+      mockStore.restaurantsResource.read = vi.fn().mockImplementation(() => {
+        throw new Error('TEST ERRROR');
+      });
+      const { renderWithContext } = setup(mockStore);
+
+      // Act
+      renderWithContext(<RestaurantScreen />);
+
+      // Assert
+      expect(screen.getByRole('alert')).toBeVisible();
+      expect(screen.getByText(/there was an error/i)).toBeVisible();
+    });
+
+    it('can try again via reset function', async () => {
+      // Arrange
+      vi.spyOn(console, 'error').mockImplementation(() => {});
+      const user = userEvent.setup();
+      mockStore.restaurantsResource.read = vi.fn().mockImplementation(() => {
+        throw new Error('TEST ERRROR');
+      });
+      const { renderWithContext } = setup(mockStore);
+
+      // Act
+      renderWithContext(<RestaurantScreen />);
+      await user.click(screen.getByRole('button', { name: /try again/i }));
+
+      // Assert
+      expect(mockStore.getRestaurants).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -99,6 +135,11 @@ describe('RestaurantScreen', () => {
     it('should display the error message', async () => {
       // Arrange
       mockStore.isSavingError = true;
+      mockStore.restaurantsResource = {
+        read: vi.fn(() => []),
+        update: vi.fn().mockResolvedValueOnce(new Promise(() => {})),
+        refresh: vi.fn(),
+      };
       const { renderWithContext } = setup(mockStore);
 
       // Act
