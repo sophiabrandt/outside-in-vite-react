@@ -3,6 +3,7 @@ import userEvent, { UserEvent } from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
 import { faker } from '@faker-js/faker';
 import { IRestaurantStore } from '@/restaurants/store/IRestaurantStore';
+import { assertType } from '../../assert-type';
 
 describe('NewRestaurantForm', () => {
   describe('initially', () => {
@@ -124,10 +125,10 @@ describe('NewRestaurantForm', () => {
   } = {}) {
     const user = userEvent.setup();
     const newRestaurant = faker.company.name();
-    const mockStore = {
+    const mockStore = assertType<IRestaurantStore>({
       createRestaurant,
       isSaving,
-    } as unknown as IRestaurantStore;
+    });
     render(<NewRestaurantForm store={mockStore} />);
     return { user, createRestaurant, newRestaurant };
   }
