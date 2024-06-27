@@ -26,7 +26,9 @@ export const RestaurantScreen = observer(() => {
   return (
     <Card sx={{ marginBlockStart: '2em' }}>
       <CardContent>
-        <Typography variant="h5">Restaurants</Typography>
+        <Typography sx={{ marginBlockEnd: '0.5em' }} variant="h5">
+          Restaurants
+        </Typography>
         <NewRestaurantForm
           createRestaurant={store.createRestaurant}
           isSaving={store.isSaving}
