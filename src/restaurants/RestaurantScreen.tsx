@@ -26,10 +26,7 @@ export const RestaurantScreen = observer(() => {
         <Typography sx={{ marginBlockEnd: '0.5em' }} variant="h5">
           Restaurants
         </Typography>
-        <NewRestaurantForm
-          createRestaurant={store.createRestaurant}
-          isSaving={store.isSaving}
-        />
+        <NewRestaurantForm store={store} />
         {store.isSavingError ? (
           <Alert data-testid="restaurant-screen-saving-error" severity="error">
             Restaurant could not be saved. Please try again later.
