@@ -1,5 +1,5 @@
 import { IRestaurantStore } from '@/restaurants/store/IRestaurantStore';
-import { assertType } from '../../assert-type';
+import { mockType } from '../../mock-type';
 import { render, screen } from '@testing-library/react';
 import { RestaurantSavingError } from '@/restaurants/ui/RestaurantSavingError';
 
@@ -7,7 +7,7 @@ describe('RestaurantSavingError', () => {
   let mockStore: IRestaurantStore;
 
   beforeEach(() => {
-    mockStore = assertType<IRestaurantStore>({
+    mockStore = mockType<IRestaurantStore>({
       isSavingError: false,
     });
   });

@@ -1,6 +1,6 @@
 import { IRestaurantStore } from '@/restaurants/store/IRestaurantStore';
 import { RestaurantDisplay } from '@/restaurants/ui/RestaurantDisplay';
-import { assertType } from '../../assert-type';
+import { mockType } from '../../mock-type';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -8,7 +8,7 @@ describe('RestaurantDisplay', () => {
   let mockStore: IRestaurantStore;
 
   beforeEach(() => {
-    mockStore = assertType<IRestaurantStore>({
+    mockStore = mockType<IRestaurantStore>({
       restaurantsResource: {
         read: vi.fn().mockResolvedValue([]),
         update: vi.fn().mockReturnValue(new Promise(() => {})),

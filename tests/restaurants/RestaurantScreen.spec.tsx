@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
-import { assertType } from '../assert-type';
+import { mockType } from '../mock-type';
 import { RestaurantStoreContext } from '@/restaurants/RestaurantContext';
 import { IRestaurantStore } from '@/restaurants/store/IRestaurantStore';
 import { RestaurantScreen } from '@/restaurants/RestaurantScreen';
@@ -11,7 +11,7 @@ describe('RestaurantScreen', () => {
   let mockStore: IRestaurantStore;
 
   beforeEach(() => {
-    mockStore = assertType<IRestaurantStore>({
+    mockStore = mockType<IRestaurantStore>({
       restaurantsResource: {
         read: vi.fn().mockResolvedValue([]),
         update: vi.fn().mockReturnValue(new Promise(() => {})),
