@@ -19,13 +19,8 @@ describe('RestaurantList', () => {
         id: simpleFaker.number.int(100),
       },
     ];
-    const mockResource = {
-      read: vi.fn().mockReturnValue(restaurants),
-      update: vi.fn(),
-      refresh: vi.fn(),
-    };
     const mockStore = mockType<IRestaurantStore>({
-      restaurantsResource: mockResource,
+      read: vi.fn().mockReturnValue(restaurants),
     });
 
     // Act

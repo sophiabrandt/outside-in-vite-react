@@ -12,11 +12,7 @@ describe('RestaurantScreen', () => {
 
   beforeEach(() => {
     mockStore = mockType<IRestaurantStore>({
-      restaurantsResource: {
-        read: vi.fn().mockResolvedValue([]),
-        update: vi.fn().mockReturnValue(new Promise(() => {})),
-        refresh: vi.fn(),
-      },
+      read: vi.fn().mockResolvedValue([]),
       getRestaurants: vi.fn().mockResolvedValueOnce([]),
       transportLayer: { get: vi.fn().mockResolvedValue([]), create: vi.fn() },
     });

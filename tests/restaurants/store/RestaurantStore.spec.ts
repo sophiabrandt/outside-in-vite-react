@@ -33,7 +33,7 @@ describe('RestaurantStore', () => {
 
       // Act
       await sut.getRestaurants();
-      const actual = sut.restaurantsResource.read();
+      const actual = sut.read();
 
       // Assert
       expect(spy).toHaveBeenCalled();
@@ -100,7 +100,7 @@ describe('RestaurantStore', () => {
 
         // Act
         await sut.createRestaurant({ name: restaurantName });
-        const actual = sut.restaurantsResource.read();
+        const actual = sut.read();
 
         // Assert
         expect(actual).toContainEqual(expected);
@@ -161,7 +161,7 @@ describe('RestaurantStore', () => {
 
         // Act
         await sut.createRestaurant({ name: restaurantName });
-        const actual = sut.restaurantsResource.read();
+        const actual = sut.read();
 
         // Assert
         expect(actual).toEqual(expected);

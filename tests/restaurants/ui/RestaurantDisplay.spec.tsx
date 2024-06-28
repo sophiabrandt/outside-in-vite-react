@@ -9,11 +9,7 @@ describe('RestaurantDisplay', () => {
 
   beforeEach(() => {
     mockStore = mockType<IRestaurantStore>({
-      restaurantsResource: {
-        read: vi.fn().mockResolvedValue([]),
-        update: vi.fn().mockReturnValue(new Promise(() => {})),
-        refresh: vi.fn(),
-      },
+      read: vi.fn().mockResolvedValue([]),
       getRestaurants: vi.fn().mockResolvedValueOnce([]),
       transportLayer: { get: vi.fn().mockResolvedValue([]), create: vi.fn() },
     });
@@ -22,7 +18,7 @@ describe('RestaurantDisplay', () => {
   describe('when suspending', () => {
     it('should show the skeleton ui', () => {
       // Arrange
-      mockStore.restaurantsResource.read = vi.fn(() => {
+      mockStore.read = vi.fn(() => {
         throw new Promise<void>(() => {});
       });
 
@@ -38,7 +34,7 @@ describe('RestaurantDisplay', () => {
     it('should show the error boundary', () => {
       // Arrange
       vi.spyOn(console, 'error').mockImplementation(() => {});
-      mockStore.restaurantsResource.read = vi.fn().mockImplementation(() => {
+      mockStore.read = vi.fn().mockImplementation(() => {
         throw new Error('TEST ERRROR');
       });
 
@@ -54,7 +50,7 @@ describe('RestaurantDisplay', () => {
       // Arrange
       vi.spyOn(console, 'error').mockImplementation(() => {});
       const user = userEvent.setup();
-      mockStore.restaurantsResource.read = vi.fn().mockImplementation(() => {
+      mockStore.read = vi.fn().mockImplementation(() => {
         throw new Error('TEST ERRROR');
       });
       render(<RestaurantDisplay store={mockStore} />);
