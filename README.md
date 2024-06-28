@@ -10,6 +10,7 @@ _Note_: this project is from the book [Outside-In React Development](https://out
 - [MobX](https://mobx.js.org) instead of Redux
 - plain fetch instead of axios
 - uncontrolled form components
+- React Suspense with custom `createResource` for data fetching
 
 ## Installation
 
