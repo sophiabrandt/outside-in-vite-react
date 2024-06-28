@@ -5,7 +5,7 @@ import { RestaurantStoreContext } from '@/restaurants/RestaurantContext';
 import { IRestaurantStore } from '@/restaurants/store/IRestaurantStore';
 import { RestaurantScreen } from '@/restaurants/RestaurantScreen';
 
-vi.mock('@/restaurants/ui/RestaurantDisplay');
+vi.mock('@/restaurants/ui/RestaurantView');
 
 describe('RestaurantScreen', () => {
   let mockStore: IRestaurantStore;

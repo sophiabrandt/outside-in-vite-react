@@ -1,10 +1,10 @@
 import { IRestaurantStore } from '@/restaurants/store/IRestaurantStore';
-import { RestaurantDisplay } from '@/restaurants/ui/RestaurantDisplay';
+import { RestaurantView } from '@/restaurants/ui/RestaurantView';
 import { mockType } from '../../mock-type';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-describe('RestaurantDisplay', () => {
+describe('RestaurantView', () => {
   let mockStore: IRestaurantStore;
 
   beforeEach(() => {
@@ -23,7 +23,7 @@ describe('RestaurantDisplay', () => {
       });
 
       // Act
-      render(<RestaurantDisplay store={mockStore} />);
+      render(<RestaurantView store={mockStore} />);
 
       // Assert
       expect(screen.getByTestId('restaurant-screen-skeleton-ui')).toBeVisible();
@@ -39,7 +39,7 @@ describe('RestaurantDisplay', () => {
       });
 
       // Act
-      render(<RestaurantDisplay store={mockStore} />);
+      render(<RestaurantView store={mockStore} />);
 
       // Assert
       expect(screen.getByRole('alert')).toBeVisible();
@@ -53,7 +53,7 @@ describe('RestaurantDisplay', () => {
       mockStore.read = vi.fn().mockImplementation(() => {
         throw new Error('TEST ERRROR');
       });
-      render(<RestaurantDisplay store={mockStore} />);
+      render(<RestaurantView store={mockStore} />);
 
       // Act
       await user.click(screen.getByRole('button', { name: /try again/i }));
@@ -68,7 +68,7 @@ describe('RestaurantDisplay', () => {
       // Arrange
 
       // Act
-      render(<RestaurantDisplay store={mockStore} />);
+      render(<RestaurantView store={mockStore} />);
 
       // Assert
       expect(
@@ -80,7 +80,7 @@ describe('RestaurantDisplay', () => {
       // Arrange
 
       // Act
-      render(<RestaurantDisplay store={mockStore} />);
+      render(<RestaurantView store={mockStore} />);
 
       // Assert
       expect(
