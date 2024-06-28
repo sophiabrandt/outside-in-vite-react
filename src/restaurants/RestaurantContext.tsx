@@ -1,5 +1,5 @@
 /* v8 ignore start */
-import { createContext } from 'react';
+import { createContext, useMemo } from 'react';
 import { RestaurantStore } from './store/RestaurantStore';
 import { RestaurantTransportLayer } from './store/RestaurantTransportLayer';
 import { IRestaurantStore } from './store/IRestaurantStore';
@@ -17,7 +17,11 @@ export const RestaurantStoreProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const store = new RestaurantStore(new RestaurantTransportLayer(BASE_URL));
+  const store = useMemo(
+    () => new RestaurantStore(new RestaurantTransportLayer(BASE_URL)),
+    []
+  );
+
   return (
     <RestaurantStoreContext.Provider value={store}>
       {children}

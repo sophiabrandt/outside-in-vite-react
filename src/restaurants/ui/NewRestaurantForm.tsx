@@ -1,18 +1,14 @@
 import { Button, FormControl, FormHelperText, TextField } from '@mui/material';
-import { Restaurant } from '../types/Restaurant';
-import { CancellablePromise } from 'mobx/dist/internal';
 import { observer } from 'mobx-react-lite';
 import { useCallback, useState } from 'react';
+import { IRestaurantStore } from '../store/IRestaurantStore';
 
 interface NewRestaurantFormProps {
-  createRestaurant: (
-    restaurant: Partial<Restaurant>
-  ) => CancellablePromise<Restaurant | undefined>;
-  isSaving: boolean;
+  store: IRestaurantStore;
 }
 
 export const NewRestaurantForm = observer(
-  ({ createRestaurant, isSaving }: NewRestaurantFormProps) => {
+  ({ store }: NewRestaurantFormProps) => {
     const [isValidationError, setIsValidationError] = useState<boolean>(false);
 
     const validate = useCallback(
@@ -35,7 +31,7 @@ export const NewRestaurantForm = observer(
         if (!validate(restaurantName)) return;
 
         try {
-          const response = await createRestaurant({
+          const response = await store.createRestaurant({
             name: restaurantName,
           });
           if (response) {
@@ -49,7 +45,7 @@ export const NewRestaurantForm = observer(
           /* v8 ignore stop */
         }
       },
-      [createRestaurant, validate]
+      [store, validate]
     );
 
     return (
@@ -69,7 +65,7 @@ export const NewRestaurantForm = observer(
           </FormHelperText>
           <Button
             sx={{ marginTop: '1em' }}
-            disabled={isSaving}
+            disabled={store.isSaving}
             type="submit"
             variant="contained">
             Add

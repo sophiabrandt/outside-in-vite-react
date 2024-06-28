@@ -99,7 +99,6 @@ describe('RestaurantStore', () => {
         const sut = new RestaurantStore(mockTransportLayer);
 
         // Act
-        await sut.getRestaurants();
         await sut.createRestaurant({ name: restaurantName });
         const actual = sut.restaurantsResource.read();
 
@@ -161,7 +160,6 @@ describe('RestaurantStore', () => {
         const sut = new RestaurantStore(mockTransportLayer);
 
         // Act
-        await sut.getRestaurants();
         await sut.createRestaurant({ name: restaurantName });
         const actual = sut.restaurantsResource.read();
 

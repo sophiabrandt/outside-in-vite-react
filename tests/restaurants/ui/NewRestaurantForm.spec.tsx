@@ -2,6 +2,8 @@ import { NewRestaurantForm } from '@/restaurants/ui/NewRestaurantForm';
 import userEvent, { UserEvent } from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
 import { faker } from '@faker-js/faker';
+import { IRestaurantStore } from '@/restaurants/store/IRestaurantStore';
+import { mockType } from '../../mock-type';
 
 describe('NewRestaurantForm', () => {
   describe('initially', () => {
@@ -123,12 +125,11 @@ describe('NewRestaurantForm', () => {
   } = {}) {
     const user = userEvent.setup();
     const newRestaurant = faker.company.name();
-    render(
-      <NewRestaurantForm
-        createRestaurant={createRestaurant}
-        isSaving={isSaving}
-      />
-    );
+    const mockStore = mockType<IRestaurantStore>({
+      createRestaurant,
+      isSaving,
+    });
+    render(<NewRestaurantForm store={mockStore} />);
     return { user, createRestaurant, newRestaurant };
   }
 

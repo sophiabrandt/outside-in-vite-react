@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { RestaurantList } from '@/restaurants/ui/RestaurantList';
 import { faker, simpleFaker } from '@faker-js/faker';
 import { IRestaurantStore } from '@/restaurants/store/IRestaurantStore';
-import { assertType } from '../../assert-type';
+import { mockType } from '../../mock-type';
 
 describe('RestaurantList', () => {
   it('should display the restaurants', () => {
@@ -24,7 +24,7 @@ describe('RestaurantList', () => {
       update: vi.fn(),
       refresh: vi.fn(),
     };
-    const mockStore = assertType<IRestaurantStore>({
+    const mockStore = mockType<IRestaurantStore>({
       restaurantsResource: mockResource,
     });
 
