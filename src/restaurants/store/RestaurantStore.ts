@@ -2,12 +2,10 @@ import { flow, makeAutoObservable } from 'mobx';
 import { Restaurant } from '../types/Restaurant';
 import { ITransportLayer } from './ITransportLayer';
 import { IRestaurantStore } from './IRestaurantStore';
-import { Resource, createResource } from '@/utils/create-resource';
+import { createResource } from '@/utils/create-resource';
 
 export class RestaurantStore implements IRestaurantStore {
-  private readonly restaurantsResource = createResource() as Resource<
-    Restaurant[]
-  >;
+  private readonly restaurantsResource = createResource<Restaurant[]>();
   private _isSaving = false;
   private _isSavingError = false;
 
