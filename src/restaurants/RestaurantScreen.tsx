@@ -2,7 +2,7 @@ import { useRestaurantStore } from './hooks/useRestaurantStore';
 import { observer } from 'mobx-react-lite';
 import { Card, CardContent, Typography } from '@mui/material';
 import { NewRestaurantForm } from './ui/NewRestaurantForm';
-import { RestaurantDisplay } from './ui/RestaurantDisplay';
+import { RestaurantView } from './ui/RestaurantView';
 import { RestaurantSavingError } from './ui/RestaurantSavingError';
 
 export const RestaurantScreen = observer(() => {
@@ -16,7 +16,7 @@ export const RestaurantScreen = observer(() => {
         </Typography>
         <RestaurantSavingError store={store} />
         <NewRestaurantForm store={store} />
-        <RestaurantDisplay store={store} />
+        <RestaurantView store={store} />
       </CardContent>
     </Card>
   );

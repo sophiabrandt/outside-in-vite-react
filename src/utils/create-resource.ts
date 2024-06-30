@@ -1,6 +1,12 @@
 import { makeAutoObservable } from 'mobx';
 
 export interface Resource<T> {
+  /**
+   * Reads the resource's data.
+   * @throws {Promise<T>} Throws the pending promise if the resource is still loading.
+   * @throws {Error} Throws an error if the resource encountered an error during fetch.
+   * @returns {T} Returns the resource data if available.
+   */
   read: () => T;
   update: (promise: Promise<T>) => Promise<T>;
   refresh: (data: T) => void;

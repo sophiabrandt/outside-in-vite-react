@@ -2,17 +2,15 @@ import { flow, makeAutoObservable } from 'mobx';
 import { Restaurant } from '../types/Restaurant';
 import { ITransportLayer } from './ITransportLayer';
 import { IRestaurantStore } from './IRestaurantStore';
-import { Resource, createResource } from '@/utils/create-resource';
+import { createResource } from '@/utils/create-resource';
 
 export class RestaurantStore implements IRestaurantStore {
-  restaurantsResource = createResource() as Resource<Restaurant[]>;
-  readonly transportLayer: ITransportLayer<Restaurant>;
-  isSaving = false;
-  isSavingError = false;
+  private readonly restaurantsResource = createResource<Restaurant[]>();
+  private _isSaving = false;
+  private _isSavingError = false;
 
-  constructor(transportLayer: ITransportLayer<Restaurant>) {
+  constructor(readonly transportLayer: ITransportLayer<Restaurant>) {
     makeAutoObservable(this, {}, { autoBind: true });
-    this.transportLayer = transportLayer;
 
     this.getRestaurants();
   }
@@ -21,8 +19,8 @@ export class RestaurantStore implements IRestaurantStore {
     this: RestaurantStore,
     restaurant: Partial<Restaurant>
   ) {
-    this.isSaving = true;
-    this.isSavingError = false;
+    this.setIsSaving(true);
+    this.setIsSavingError(false);
     try {
       const created: Restaurant | undefined =
         yield this.transportLayer.create(restaurant);
@@ -32,11 +30,11 @@ export class RestaurantStore implements IRestaurantStore {
           created,
         ]);
       }
-      this.isSaving = false;
+      this.setIsSaving(false);
       return created;
     } catch (error) {
-      this.isSaving = false;
-      this.isSavingError = true;
+      this.setIsSaving(false);
+      this.setIsSavingError(true);
       /* v8 ignore start */
       console.error(
         `Error saving restaurant: ${error instanceof Error ? error.message : error}`
@@ -51,4 +49,24 @@ export class RestaurantStore implements IRestaurantStore {
     );
     return restaurants;
   });
+
+  read = () => {
+    return this.restaurantsResource.read();
+  };
+
+  get isSaving() {
+    return this._isSaving;
+  }
+
+  get isSavingError() {
+    return this._isSavingError;
+  }
+
+  private setIsSaving(value: boolean) {
+    this._isSaving = value;
+  }
+
+  private setIsSavingError(value: boolean) {
+    this._isSavingError = value;
+  }
 }

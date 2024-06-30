@@ -14,10 +14,15 @@ export class RestaurantTransportLayer implements ITransportLayer<Restaurant> {
         },
         body: JSON.stringify(data),
       });
+      if (!response.ok) {
+        throw new Error(
+          `Failed to create restaurant: ${response.status} ${response.statusText}`
+        );
+      }
       return await response.json();
     } catch (error) {
       throw new Error(
-        `Failed to create restaurant: ${error instanceof Error && error.message}`
+        `Failed to create restaurant: ${error instanceof Error ? error.message : error}`
       );
     }
   }
@@ -33,7 +38,7 @@ export class RestaurantTransportLayer implements ITransportLayer<Restaurant> {
       return await response.json();
     } catch (error) {
       throw new Error(
-        `Failed to fetch restaurants: ${error instanceof Error && error.message}`
+        `Failed to fetch restaurants: ${error instanceof Error ? error.message : error}`
       );
     }
   }

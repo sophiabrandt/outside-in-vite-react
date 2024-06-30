@@ -1,19 +1,15 @@
 import { IRestaurantStore } from '@/restaurants/store/IRestaurantStore';
-import { RestaurantDisplay } from '@/restaurants/ui/RestaurantDisplay';
+import { RestaurantView } from '@/restaurants/ui/RestaurantView';
 import { mockType } from '../../mock-type';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-describe('RestaurantDisplay', () => {
+describe('RestaurantView', () => {
   let mockStore: IRestaurantStore;
 
   beforeEach(() => {
     mockStore = mockType<IRestaurantStore>({
-      restaurantsResource: {
-        read: vi.fn().mockResolvedValue([]),
-        update: vi.fn().mockReturnValue(new Promise(() => {})),
-        refresh: vi.fn(),
-      },
+      read: vi.fn().mockResolvedValue([]),
       getRestaurants: vi.fn().mockResolvedValueOnce([]),
       transportLayer: { get: vi.fn().mockResolvedValue([]), create: vi.fn() },
     });
@@ -22,12 +18,12 @@ describe('RestaurantDisplay', () => {
   describe('when suspending', () => {
     it('should show the skeleton ui', () => {
       // Arrange
-      mockStore.restaurantsResource.read = vi.fn(() => {
+      mockStore.read = vi.fn(() => {
         throw new Promise<void>(() => {});
       });
 
       // Act
-      render(<RestaurantDisplay store={mockStore} />);
+      render(<RestaurantView store={mockStore} />);
 
       // Assert
       expect(screen.getByTestId('restaurant-screen-skeleton-ui')).toBeVisible();
@@ -38,12 +34,12 @@ describe('RestaurantDisplay', () => {
     it('should show the error boundary', () => {
       // Arrange
       vi.spyOn(console, 'error').mockImplementation(() => {});
-      mockStore.restaurantsResource.read = vi.fn().mockImplementation(() => {
+      mockStore.read = vi.fn().mockImplementation(() => {
         throw new Error('TEST ERRROR');
       });
 
       // Act
-      render(<RestaurantDisplay store={mockStore} />);
+      render(<RestaurantView store={mockStore} />);
 
       // Assert
       expect(screen.getByRole('alert')).toBeVisible();
@@ -54,10 +50,10 @@ describe('RestaurantDisplay', () => {
       // Arrange
       vi.spyOn(console, 'error').mockImplementation(() => {});
       const user = userEvent.setup();
-      mockStore.restaurantsResource.read = vi.fn().mockImplementation(() => {
+      mockStore.read = vi.fn().mockImplementation(() => {
         throw new Error('TEST ERRROR');
       });
-      render(<RestaurantDisplay store={mockStore} />);
+      render(<RestaurantView store={mockStore} />);
 
       // Act
       await user.click(screen.getByRole('button', { name: /try again/i }));
@@ -72,7 +68,7 @@ describe('RestaurantDisplay', () => {
       // Arrange
 
       // Act
-      render(<RestaurantDisplay store={mockStore} />);
+      render(<RestaurantView store={mockStore} />);
 
       // Assert
       expect(
@@ -84,7 +80,7 @@ describe('RestaurantDisplay', () => {
       // Arrange
 
       // Act
-      render(<RestaurantDisplay store={mockStore} />);
+      render(<RestaurantView store={mockStore} />);
 
       // Assert
       expect(

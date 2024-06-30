@@ -1,30 +1,16 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
-import { mockType } from '../mock-type';
 import { RestaurantStoreContext } from '@/restaurants/RestaurantContext';
-import { IRestaurantStore } from '@/restaurants/store/IRestaurantStore';
 import { RestaurantScreen } from '@/restaurants/RestaurantScreen';
+import { mockType } from '../mock-type';
+import { IRestaurantStore } from '@/restaurants/store/IRestaurantStore';
 
-vi.mock('@/restaurants/ui/RestaurantDisplay');
+vi.mock('@/restaurants/ui/RestaurantList');
 
 describe('RestaurantScreen', () => {
-  let mockStore: IRestaurantStore;
-
-  beforeEach(() => {
-    mockStore = mockType<IRestaurantStore>({
-      restaurantsResource: {
-        read: vi.fn().mockResolvedValue([]),
-        update: vi.fn().mockReturnValue(new Promise(() => {})),
-        refresh: vi.fn(),
-      },
-      getRestaurants: vi.fn().mockResolvedValueOnce([]),
-      transportLayer: { get: vi.fn().mockResolvedValue([]), create: vi.fn() },
-    });
-  });
-
   it('should render the RestaurantScreen', async () => {
     // Arrange
-    const { view } = setup(mockStore);
+    const { view } = setup();
 
     // Act
     view(<RestaurantScreen />);
@@ -33,12 +19,17 @@ describe('RestaurantScreen', () => {
     expect(screen.getByRole('heading', { name: /restaurants/i })).toBeVisible();
   });
 
-  function setup(store: IRestaurantStore) {
+  function setup() {
     const view = (component: React.ReactNode) => {
-      return render(
-        <RestaurantStoreContext.Provider value={store}>
-          {component}
-        </RestaurantStoreContext.Provider>
+      const mockStore = mockType<IRestaurantStore>({
+        read: vi.fn().mockResolvedValue([]),
+      });
+      return waitFor(() =>
+        render(
+          <RestaurantStoreContext.Provider value={mockStore}>
+            {component}
+          </RestaurantStoreContext.Provider>
+        )
       );
     };
     return { view };

@@ -7,7 +7,7 @@ interface RestaurantListProps {
 }
 
 export const RestaurantList = observer(({ store }: RestaurantListProps) => {
-  const restaurants = store.restaurantsResource.read();
+  const restaurants = store.read();
   return (
     <List>
       {restaurants.map(restaurant => (

@@ -28,11 +28,7 @@ describe('RestaurantSavingError', () => {
     it('should display the error message', async () => {
       // Arrange
       mockStore.isSavingError = true;
-      mockStore.restaurantsResource = {
-        read: vi.fn(() => []),
-        update: vi.fn().mockResolvedValueOnce(new Promise(() => {})),
-        refresh: vi.fn(),
-      };
+      mockStore.read = vi.fn(() => []);
 
       // Act
       render(<RestaurantSavingError store={mockStore} />);
