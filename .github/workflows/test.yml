@@ -13,6 +13,8 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
+      - name: Set environment for Test
+        run: echo "VITE_API_KEY=xxxxx" > .env
       - name: Install Dependencies
         run: bun install --frozen-lockfile
       - name: Unit Tests
